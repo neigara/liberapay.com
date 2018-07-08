@@ -273,9 +273,17 @@ if user.is_admin:
                 % if event['team']
                     for team <a href="/{{ event['team_name'] }}/">{{ event['team_name'] }}</a>
                 % endif
-            % elif context == 'take'
+            % elif context in ('take', 'take-in-advance')
                 {{ _("anonymous donation for your role in the {0} team",
                      ('<a href="/{0}/">{0}</a>'|safe).format(event['team_name'])) }}
+                % if event['unit_amount']
+                    % set weeks = int((event['amount'] / event['unit_amount']).amount)
+                    ({{ ngettext(
+                        "{n} week of {money_amount}",
+                        "{n} weeks of {money_amount}",
+                        weeks, money_amount=event['unit_amount']
+                    ) }})
+                % endif
             % elif context == 'refund'
                 {{ _("donation refund") }}
             % elif context == 'expense'
