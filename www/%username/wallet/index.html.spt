@@ -285,8 +285,16 @@ if user.is_admin:
                      link_close='</a>'|safe,
                      payer=('<a href="/{0}/">{0}</a>'|safe).format(event['username']),
                 ) }}
-            % elif context == 'tip'
+            % elif context in ('tip', 'tip-in-advance')
                 {{ _("anonymous donation") }}
+                % if event['unit_amount']
+                    % set weeks = int((event['amount'] / event['unit_amount']).amount)
+                    ({{ ngettext(
+                        "{n} week of {money_amount}",
+                        "{n} weeks of {money_amount}",
+                        weeks, money_amount=event['unit_amount']
+                    ) }})
+                % endif
             % elif context == 'final-gift'
                 {{ _("one-off donation from someone closing their account") }}
             % elif context == 'chargeback'
